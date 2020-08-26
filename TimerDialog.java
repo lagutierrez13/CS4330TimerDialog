@@ -13,7 +13,7 @@ public class TimerDialog extends JDialog {
     protected final JLabel timeDisplay =
             new JLabel("0:00:00", SwingConstants.CENTER);
 
-    protected TimerModel timerModel = new TimerModel();
+    protected TimerModel timerModel = new TimerModel(1000);
 
 
     public TimerDialog() {
