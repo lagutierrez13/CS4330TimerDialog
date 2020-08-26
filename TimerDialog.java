@@ -15,7 +15,6 @@ public class TimerDialog extends JDialog {
 
     protected TimerModel timerModel = new TimerModel();
 
-
     public TimerDialog() {
         super((JFrame) null, "Timer");
         setSize(new Dimension(200,120));
@@ -55,7 +54,7 @@ public class TimerDialog extends JDialog {
         timeDisplay.setText("Stop clicked.");
         timerModel.stop();
     }
-
+    
     public static void main(String[] args) {
         new TimerDialog();
     }

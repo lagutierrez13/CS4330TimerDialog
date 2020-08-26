@@ -3,21 +3,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TimerModel implements Runnable {
+
     private final AtomicBoolean running = new AtomicBoolean(false); // Feature Flag: START and STOP thread
+    private final int sleepInterval = 1000;
     private Thread worker;
     private long startTime;
-    private final int sleepInterval = 1000;
-
-    public TimerModel() {}
+    private TimerDialog timerDialog;
 
     public void start(){
         worker = new Thread(this);
         worker.start();
     }
 
-
-    public void stop() { running.set(false); }      // Feature Flag: Set to false to kill thread.
-
+    public void stop() { running.set(false); } // Feature Flag: Set to false to kill thread.
 
     private String millisToDisplayFormat(long milliseconds) {
         String result = String.format("%02d:%02d:%02d",
@@ -33,19 +31,21 @@ public class TimerModel implements Runnable {
     public void run() {
         startTime = System.currentTimeMillis();
 
-        running.set(true);                          // Feature Flag: Set to true to start new thread.
+        running.set(true); // Feature Flag: Set to true to start new thread.
 
         new Thread(() -> {
             while (running.get()) {
-                long displayTime = System.currentTimeMillis() - startTime;
                 try {
-                    SwingUtilities.invokeLater(() -> { System.out.println(millisToDisplayFormat(displayTime)); });
+                    SwingUtilities.invokeLater(() -> {  millisToDisplayFormat(elapsedTime()); });
                     Thread.sleep(sleepInterval);
-                    System.out.println(Thread.currentThread().getName());
                 } catch (InterruptedException e){
-                    System.out.println("ERROR");
+                    System.out.println("ERROR: " + e);
                 }
             }
         }).start();
+    }
+
+    public long elapsedTime(){
+        return System.currentTimeMillis() - startTime;
     }
 }
