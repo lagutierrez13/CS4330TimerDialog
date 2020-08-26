@@ -1,28 +1,41 @@
 import javax.swing.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TimerModel {
+public class TimerModel implements Runnable {
+    private final AtomicBoolean running = new AtomicBoolean(false); // Feature Flag: START and STOP thread
+    private Thread worker;
     private long startTime;
+    private int sleepInterval;
+
+    public TimerModel(int sleepInterval) {
+        sleepInterval = sleepInterval;
+    }
 
     public void start(){
+        worker = new Thread(this);
+        worker.start();
+    }
+
+
+    public void stop() { running.set(false); } // Feature Flag: Set to false to kill thread.
+
+    @Override
+    public void run() {
         startTime = System.currentTimeMillis();
+
+        running.set(true); // Feature Flag: Set to true to start new thread.
+
         new Thread(() -> {
-            while (isRunning()) {
-                SwingUtilities.invokeLater(() -> { System.out.println(System.currentTimeMillis() - startTime); });
-                try{
+            while (running.get()) {
+                long displayTime = System.currentTimeMillis() - startTime;
+                try {
+                    SwingUtilities.invokeLater(() -> { System.out.println(displayTime); });
                     Thread.sleep(1000);
                     System.out.println(Thread.currentThread().getName());
-                }catch (InterruptedException e){
+                } catch (InterruptedException e){
                     System.out.println("ERROR");
                 }
             }
         }).start();
     }
-
-    public void stop() { Thread.currentThread().interrupt(); } // change to not be interrupt cuz it doesn't work
-
-    public long elapsedTime(){
-        return System.currentTimeMillis() - startTime;
-    }
-
-    public boolean isRunning() { return Thread.currentThread().isAlive(); }
 }
