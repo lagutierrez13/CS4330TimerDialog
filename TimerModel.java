@@ -47,6 +47,7 @@ public class TimerModel implements Runnable {
                 try {
                     SwingUtilities.invokeLater(() -> {
                         String display = millisToDisplayFormat(displayTime);
+
                         timeLabel.setText(display);
                         System.out.println(display);
                     });
