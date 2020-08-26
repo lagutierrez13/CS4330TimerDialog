@@ -1,15 +1,14 @@
 import javax.swing.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TimerModel implements Runnable {
     private final AtomicBoolean running = new AtomicBoolean(false); // Feature Flag: START and STOP thread
     private Thread worker;
     private long startTime;
-    private int sleepInterval;
+    private final int sleepInterval = 1000;
 
-    public TimerModel(int sleepInterval) {
-        sleepInterval = sleepInterval;
-    }
+    public TimerModel() {}
 
     public void start(){
         worker = new Thread(this);
@@ -17,20 +16,31 @@ public class TimerModel implements Runnable {
     }
 
 
-    public void stop() { running.set(false); } // Feature Flag: Set to false to kill thread.
+    public void stop() { running.set(false); }      // Feature Flag: Set to false to kill thread.
+
+
+    private String millisToDisplayFormat(long milliseconds) {
+        String result = String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(milliseconds),
+                TimeUnit.MILLISECONDS.toMinutes(milliseconds) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliseconds)),
+                TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
+        return result;
+    }
 
     @Override
     public void run() {
         startTime = System.currentTimeMillis();
 
-        running.set(true); // Feature Flag: Set to true to start new thread.
+        running.set(true);                          // Feature Flag: Set to true to start new thread.
 
         new Thread(() -> {
             while (running.get()) {
                 long displayTime = System.currentTimeMillis() - startTime;
                 try {
-                    SwingUtilities.invokeLater(() -> { System.out.println(displayTime); });
-                    Thread.sleep(1000);
+                    SwingUtilities.invokeLater(() -> { System.out.println(millisToDisplayFormat(displayTime)); });
+                    Thread.sleep(sleepInterval);
                     System.out.println(Thread.currentThread().getName());
                 } catch (InterruptedException e){
                     System.out.println("ERROR");
