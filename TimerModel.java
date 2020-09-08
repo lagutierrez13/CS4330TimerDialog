@@ -49,10 +49,11 @@ public class TimerModel implements Runnable {
                         String display = millisToDisplayFormat(displayTime);
 
                         timeLabel.setText(display);
-                        System.out.println(display);
                     });
                     Thread.sleep(sleepInterval);
-                    System.out.println(Thread.currentThread().getName());
+                    System.out.printf("Thread Name: %s, Elapsed Time: %s\n",
+                            Thread.currentThread().getName(),
+                            millisToDisplayFormat(displayTime));
                 } catch (InterruptedException e){
                     System.err.println("ERROR");
                 }
