@@ -1,15 +1,13 @@
 pipeline { 
 
-
 	agent any 
 
 	stages {
 	   
-		stage("Example Build") { 
+		stage("Build Timer Dialog") { 
 			steps { 
-			    
-	        
-	            git url: 'https://github.com/lagutierrez13/CS4330TimerDialog.git'
+			    	        
+	            		git url: "https://github.com/lagutierrez13/CS4330TimerDialog.git"
 
 				sh "ls -ltr" 
 				
@@ -23,7 +21,7 @@ pipeline {
 		always {
 
 			archiveArtifacts artifacts: "TimerDialog.class", fingerprint: true
-		    archiveArtifacts artifacts: "TimerModel.class", fingerprint: true
+		    	archiveArtifacts artifacts: "TimerModel.class", fingerprint: true
 
 
 		} 
